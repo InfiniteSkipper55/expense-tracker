@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -104,6 +106,42 @@ public class ExpenseControllerTest {
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+    }
+
+    @Test
+    void testGetExpensesByUser_ValidUserId() {
+        // Arrange
+        Long userId = 1L;
+        List<Expense> expectedExpenses = Arrays.asList(new Expense(1L, null, null, null, "Expense 1", null));
+        when(expenseService.getExpensesByUserId(userId)).thenReturn(expectedExpenses);
+
+        // Act
+        ResponseEntity<List<Expense>> result = expenseController.getExpensesByUser(userId);
+
+        // Assert
+        assertEquals(ResponseEntity.ok().body(expectedExpenses), result);
+    }
+
+    @Test
+    void testGetExpensesByUser_NullUserId() {
+        // Act
+        ResponseEntity<List<Expense>> result = expenseController.getExpensesByUser(null);
+
+        // Assert
+        assertEquals(ResponseEntity.badRequest().build(), result);
+    }
+
+    @Test
+    void testGetExpensesByUser_UserIdNotFound() {
+        // Arrange
+        Long userId = 2L;
+        Mockito.when(expenseService.getExpensesByUserId(userId)).thenThrow(new IllegalArgumentException());
+
+        // Act
+        ResponseEntity<List<Expense>> result = expenseController.getExpensesByUser(userId);
+
+        // Assert
+        assertEquals(ResponseEntity.notFound().build(), result);
     }
 
 }
