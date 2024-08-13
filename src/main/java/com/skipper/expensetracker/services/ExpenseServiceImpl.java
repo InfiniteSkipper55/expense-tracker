@@ -2,9 +2,7 @@ package com.skipper.expensetracker.services;
 
 import com.skipper.expensetracker.entities.Category;
 import com.skipper.expensetracker.entities.Expense;
-import com.skipper.expensetracker.entities.User;
 import com.skipper.expensetracker.repositories.ExpenseRepository;
-import com.skipper.expensetracker.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +17,6 @@ import java.util.Optional;
 public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
-
-    private final UserRepository userRepository;
 
     // Endpoint to create a new expense
     @Override
@@ -85,19 +81,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     // Endpoint to retrieve all expenses for a user
     @Override
-    public List<Expense> getExpensesByUserId(Long userId) {
-        // Validate user ID
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
-
-        // Check if user record exists
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("User record not found");
-        }
-
-        return expenseRepository.findByUserUserId(userId);
+    public Expense getExpensesByExpenseId(Long expenseId) {
+        return expenseRepository.findById(expenseId).orElse(null);
     }
 
     // Endpoint to retrieve all expenses

@@ -3,6 +3,8 @@ package com.skipper.expensetracker.controllers;
 import com.skipper.expensetracker.entities.Category;
 import com.skipper.expensetracker.services.CategoryService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,12 @@ import java.util.List;
 @RequestMapping("/api/categories")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    @Autowired
+    private CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     // Endpoint to create a new category
     @PostMapping
@@ -25,8 +32,6 @@ public class CategoryController {
             }
             Category savedCategory = categoryService.addCategory(category);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -77,8 +82,6 @@ public class CategoryController {
                 return ResponseEntity.notFound().build();
             }
             return ResponseEntity.ok(category);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -93,12 +96,11 @@ public class CategoryController {
 
         try {
             categoryService.deleteCategory(categoryId);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
         return ResponseEntity.noContent().build();
     }
+
 }

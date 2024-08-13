@@ -3,6 +3,8 @@ package com.skipper.expensetracker.controllers;
 import com.skipper.expensetracker.entities.Expense;
 import com.skipper.expensetracker.services.ExpenseService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,21 +18,19 @@ import java.util.List;
 @RequestMapping("/api/expenses")
 public class ExpenseController {
 
-    private final ExpenseService expenseService;    
+    @Autowired
+    private ExpenseService expenseService;    
 
     // Endpoint to create a new expense
     @PostMapping
     public ResponseEntity<Expense> createExpense(@RequestBody Expense expense) {
         if (expense == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build();            
         }
-
         try {
             Expense createdExpense = expenseService.addExpense(expense);
             return new ResponseEntity<>(createdExpense, HttpStatus.CREATED);
-        } catch (DateTimeParseException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (IllegalArgumentException e) {
+        } catch (DateTimeParseException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -49,16 +49,16 @@ public class ExpenseController {
         }
     }
 
-    // Endpoint to retrieve all expenses for a user
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Expense>> getExpensesByUser(@PathVariable Long userId) {
-        if (userId == null) {
+    // Endpoint to retrieve expenses for a user
+    @GetMapping("/{expenseId}")
+    public ResponseEntity<Expense> getExpensesByExpenseId(@PathVariable Long expenseId) {
+        if (expenseId == null) {
             return ResponseEntity.badRequest().build();
         }
 
         try {
-            List<Expense> expenses = expenseService.getExpensesByUserId(userId);
-            return ResponseEntity.ok().body(expenses);
+            Expense expense = expenseService.getExpensesByExpenseId(expenseId);
+            return ResponseEntity.ok(expense);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }

@@ -3,6 +3,8 @@ package com.skipper.expensetracker.controllers;
 import com.skipper.expensetracker.entities.User;
 import com.skipper.expensetracker.services.UserService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
+    // Endpoint to create a new user
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
         if (user == null) {
@@ -26,6 +30,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
+    // Endpoint to retrieve a user by ID
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Long userId) {
         if (userId == null) {
@@ -42,6 +47,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    // Additional endpoints for user authentication, profile management, etc.
 }

@@ -12,7 +12,7 @@ public interface ExpenseService {
 
     Boolean deleteExpense(Long expenseId);
 
-    List<Expense> getExpensesByUserId(Long userId);
+    Expense getExpensesByExpenseId(Long expenseId);
 
     List<Expense> getAllExpenses();
 
