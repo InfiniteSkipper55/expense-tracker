@@ -1,7 +1,5 @@
 package com.skipper.expensetracker.entities;
 
-import java.util.Objects;
-
 import jakarta.persistence.*;
 import lombok.*;
 

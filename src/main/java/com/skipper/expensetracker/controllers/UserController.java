@@ -4,6 +4,8 @@ import com.skipper.expensetracker.entities.User;
 import com.skipper.expensetracker.services.UserService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +48,22 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    // Endpoint to retrieve all users
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    // Endpoint to delete a user by ID
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        if (userId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
     }
 }

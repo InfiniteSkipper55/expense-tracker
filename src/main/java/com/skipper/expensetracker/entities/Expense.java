@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Builder
 @Getter
 @Setter
@@ -21,6 +23,7 @@ public class Expense {
     private Category category;
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     private Double amount;

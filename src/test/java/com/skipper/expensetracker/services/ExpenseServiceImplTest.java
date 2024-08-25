@@ -31,7 +31,6 @@ class ExpenseServiceImplTest {
 
     @Test
     public void testAddExpense_ValidExpenseRecord() {
-        // Arrange
         Expense expense = new Expense();
         expense.setUser(new User());
         expense.setAmount(100.0);
@@ -39,21 +38,16 @@ class ExpenseServiceImplTest {
         expense.setCategory(new Category());
         expense.setDate(new Date());
 
-        // Mock the save method of the ExpenseRepository
         when(expenseRepository.save(any(Expense.class))).thenReturn(expense);
 
-        // Act
         Expense result = expenseService.addExpense(expense);
 
-        // Assert
         Assertions.assertEquals(expense, result);
         Mockito.verify(expenseRepository, Mockito.times(1)).save(expense);
     }
 
     @Test
     public void testAddExpense_NullExpenseRecord() {
-
-        // Act and Assert
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             expenseService.addExpense(null);
         }, "Expense record fields cannot be null");
@@ -61,10 +55,8 @@ class ExpenseServiceImplTest {
 
     @Test
     public void testAddExpense_ExpenseRecordWithNullFields() {
-        // Arrange
         Expense expense = new Expense();
 
-        // Act and Assert
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             expenseService.addExpense(expense);
         }, "Expense record fields cannot be null");
@@ -72,14 +64,12 @@ class ExpenseServiceImplTest {
 
     @Test
     public void testAddExpense_ExpenseRecordWithNullUser() {
-        // Arrange
         Expense expense = new Expense();
         expense.setAmount(100.0);
         expense.setDescription("Test Expense");
         expense.setCategory(new Category());
         expense.setDate(new Date());
 
-        // Act and Assert
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             expenseService.addExpense(expense);
         }, "Expense record fields cannot be null");
@@ -87,16 +77,13 @@ class ExpenseServiceImplTest {
 
     @Test
     void testGetAllExpenses() {
-        // Arrange
         List<Expense> mockExpenses = List.of(
                 new Expense(1L, null, null, null, "Expense 1", null),
                 new Expense(2L, null, null, null, "Expense 2", null));
         when(expenseRepository.findAll()).thenReturn(mockExpenses);
 
-        // Act
         List<Expense> result = expenseService.getAllExpenses();
 
-        // Assert
         assertEquals(2, result.size());
     }
 

@@ -1,6 +1,5 @@
 package com.skipper.expensetracker.services;
 
-import com.skipper.expensetracker.entities.Category;
 import com.skipper.expensetracker.entities.Expense;
 import com.skipper.expensetracker.repositories.ExpenseRepository;
 
@@ -18,26 +17,18 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
 
-    // Endpoint to create a new expense
     @Override
     public Expense addExpense(Expense expense) {
         // Validate expense record
-        if (expense == null || expense.getUser() == null
-                || expense.getAmount() == null || expense.getDescription() == null
+        if (expense.getUser() == null || expense.getAmount() == null || expense.getDescription() == null
                 || expense.getCategory() == null || expense.getDate() == null) {
             throw new IllegalArgumentException("Expense record fields cannot be null");
         }
         return expenseRepository.save(expense);
     }
 
-    // Endpoint to edit an existing expense
     @Override
     public Expense editExpense(Long expenseId, Expense updatedExpense) {
-        // Validate expense ID
-        if (expenseId == null) {
-            throw new IllegalArgumentException("Expense id cannot be null");
-        }
-
         // Validate update expense record
         if (updatedExpense == null || updatedExpense.getUser() == null
                 || updatedExpense.getAmount() == null || updatedExpense.getDescription() == null
@@ -58,17 +49,13 @@ public class ExpenseServiceImpl implements ExpenseService {
         existingExpense.setDescription(updatedExpense.getDescription());
         existingExpense.setCategory(updatedExpense.getCategory());
         existingExpense.setDate(updatedExpense.getDate());
+        existingExpense.setUser(updatedExpense.getUser());
+
         return expenseRepository.save(existingExpense);
     }
 
-    // Endpoint to delete an existing expense
     @Override
     public Boolean deleteExpense(Long expenseId) {
-        // Validate expense ID
-        if (expenseId == null) {
-            throw new IllegalArgumentException("Expense ID cannot be null");
-        }
-
         // Check if the expense record exists
         Optional<Expense> existingExpenseOptional = expenseRepository.findById(expenseId);
         if (existingExpenseOptional.isEmpty()) {
@@ -79,21 +66,14 @@ public class ExpenseServiceImpl implements ExpenseService {
         return true;
     }
 
-    // Endpoint to retrieve all expenses for a user
     @Override
     public Expense getExpensesByExpenseId(Long expenseId) {
         return expenseRepository.findById(expenseId).orElse(null);
     }
 
-    // Endpoint to retrieve all expenses
     @Override
     public List<Expense> getAllExpenses() {
         return expenseRepository.findAll();
     }
 
-    // Endpoint to retrieve expenses by category
-    @Override
-    public List<Expense> getExpensesByCategory(Category category) {
-        return expenseRepository.findByCategory(category);
-    }
 }
